@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Skill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 5px rgba(102,126,234,0.5);
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Add Skill</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Skill Name Field -->
+       {{form.as_p}}
+
+        <!-- Error Messages -->
+        {% if form.skill_name.errors %}
+            <div class="error">
+                {{ form.skill_name.errors }}
+            </div>
+        {% endif %}
+
+        <button type="submit">Save Skill</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!-- templates/emails/rejected.html -->
+<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial, sans-serif; background:#f8fafc; padding:20px;">
+    <div style="max-width:600px; margin:auto; background:white; padding:24px; border-radius:10px;">
+      
+      <h2 style="color:#dc2626;">Application Update</h2>
+
+      <p>Dear {{ name }},</p>
+
+      <p>
+        Thank you for applying for the position of 
+        <strong>{{ job_title }}</strong>.
+      </p>
+
+      <p>
+        After careful consideration, we regret to inform you that you were not selected at this time.
+      </p>
+
+      <p>
+        We encourage you to apply again in the future.
+      </p>
+
+      <hr style="margin:20px 0;"/>
+
+      <p style="font-size:12px; color:#64748b;">
+        Regards,<br/>
+        {{ company_name }}
+      </p>
+
+    </div>
+  </body>
+</html>
