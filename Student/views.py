@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication 
 from Company.models import Job
 from .models import *
+from django.db.models import Q
 
 
 User = get_user_model()
@@ -234,6 +235,7 @@ class RecommendedJobsView(APIView):
                         "skills": job.skills,
                         "salary": job.salary,
                         "company": job.company.companyprofile.company_name,
+                        "created_at": job.created_at.isoformat(),
                     })
 
             return Response(matched_jobs)
@@ -297,6 +299,10 @@ class ApplyJobView(APIView):
                 "job": {
                     "title": obj.job.title,
                     "company": obj.job.company.companyprofile.company_name,
+                    'salary': obj.job.salary,
+                    'deadline': obj.job.deadline,
+                    'location': obj.job.location,
+                    'description': obj.job.description,
                 },
                 # "status": obj.status,
                 "applied_at": obj.applied_at.strftime("%Y-%m-%d"),
@@ -342,3 +348,87 @@ class MarkNotificationReadView(APIView):
             return Response({"error": "Notification not found"}, status=404)
 
         return Response({"message": "Marked as read"})
+    
+
+
+
+class JobSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        search = request.GET.get("search", "")
+        location = request.GET.get("location", "")
+
+        jobs = Job.objects.all()
+
+        #
+        if search:
+            jobs = jobs.filter(
+                Q(title__icontains=search) |
+                Q(skills__icontains=search) |
+                Q(company__companyprofile__company_name__icontains=search)
+            )
+
+        
+        if location:
+            jobs = jobs.filter(location__icontains=location)
+
+        data = []
+        for job in jobs:
+            data.append({
+                "id": job.id,
+                "title": job.title,
+                "company": job.company.companyprofile.company_name,
+                "location": job.location,
+                'description': job.description,
+                'deadline': job.deadline,
+                "salary": job.salary,
+                "job_type": job.job_type,
+                "created_at": job.created_at.isoformat(),
+            })
+
+        return Response(data)
+    
+class SaveJobView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        job_id = request.data.get("job_id")
+
+        job = Job.objects.get(id=job_id)
+
+        saved = SavedJob.objects.filter(user=user, job=job)
+
+        if saved.exists():
+            saved.delete()
+            return Response({"saved": False})
+        else:
+            SavedJob.objects.create(user=user, job=job)
+            return Response({"saved": True})
+        
+class SavedJobsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        jobs = SavedJob.objects.filter(user=request.user)
+
+        data = [
+            {
+                "id": obj.id,
+                "job": {
+                    "id": obj.job.id,
+                    "title": obj.job.title,
+                    "company": obj.job.company.companyprofile.company_name,
+                    "location": obj.job.location,
+                    "description": obj.job.description,
+                    "deadline": obj.job.deadline,
+                    "salary": obj.job.salary,
+                    "job_type": obj.job.job_type,
+                    "created_at": obj.job.created_at.isoformat(),
+                },
+            }
+            for obj in jobs
+        ]
+
+        return Response(data)

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+    .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .header  { background: #0f766e; padding: 32px; text-align: center; }
+    .header h1 { color: #fff; margin: 0; font-size: 22px; }
+    .body    { padding: 32px; color: #333; line-height: 1.7; }
+    .body h2 { font-size: 18px; margin-top: 0; }
+    .info-box { background: #f0fdf9; border-left: 4px solid #0f766e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+    .info-box p { margin: 6px 0; font-size: 14px; color: #444; }
+    .info-box strong { color: #134e4a; }
+    .btn    { display: inline-block; margin-top: 20px; padding: 12px 28px; background: #0f766e; color: #ffffff; border-radius: 7px; text-decoration: none; font-weight: bold; font-size: 15px; }
+    .footer { background: #f9f9f9; text-align: center; padding: 18px; font-size: 12px; color: #999; }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>📅 Interview Scheduled</h1>
+  </div>
+
+  <div class="body">
+    <h2>Hi {{ name }},</h2>
+
+    <p>
+      Great news! Your interview for <strong>{{ job_title }}</strong> at
+      <strong>{{ company_name }}</strong> has been scheduled.
+    </p>
+
+    <div class="info-box">
+      <p><strong>Date:</strong> {{ interview_date }}</p>
+      <p><strong>Time:</strong> {{ interview_time }}</p>
+      <p><strong>Mode:</strong> {{ interview_mode }}</p>
+      {% if interviewer_name %}
+      <p><strong>Interviewer:</strong> {{ interviewer_name }}</p>
+      {% endif %}
+      {% if meeting_link %}
+      <p><strong>
+        {% if interview_mode == "In-Person" %}Location{% else %}Meeting link{% endif %}:
+      </strong> {{ meeting_link }}</p>
+      {% endif %}
+    </div>
+
+    {% if meeting_link and interview_mode != "In-Person" %}
+    <a href="{{ meeting_link }}" class="btn">Join Interview →</a>
+    {% endif %}
+
+    {% if notes %}
+    <p style="margin-top: 24px;"><strong>Notes from the team:</strong><br>{{ notes }}</p>
+    {% endif %}
+
+    <p style="margin-top: 28px;">
+      Please be on time and have any relevant work or portfolio ready.<br>
+      All the best! 💼<br>
+      <strong>{{ company_name }} Hiring Team</strong>
+    </p>
+  </div>
+
+  <div class="footer">
+    This is an automated message. Please do not reply to this email.
+  </div>
+</div>
+</body>
+</html>
