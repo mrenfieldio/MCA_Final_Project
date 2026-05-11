@@ -508,3 +508,102 @@ class ScheduleInterviewView(APIView):
             "interview_id": interview.id,
             "new_status": "interview",
         })
+        
+        
+class CompanyAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        user = request.user
+
+        jobs = Job.objects.filter(company=user)
+
+        total_jobs = jobs.count()
+
+        active_jobs = jobs.count()
+
+        applications = AppliedJobs.objects.filter(
+            job__company=user
+        )
+
+        # PIPELINE COUNTS
+        pipeline = [
+            {
+                "stage": "applied",
+                "value": applications.count()
+            },
+            {
+                "stage": "shortlisted",
+                "value": applications.filter(status="shortlisted").count()
+            },
+            {
+                "stage": "assessment",
+                "value": applications.filter(status="assessment").count()
+            },
+            {
+                "stage": "interview",
+                "value": applications.filter(status="interview").count()
+            },
+            {
+                "stage": "accepted",
+                "value": applications.filter(status="accepted").count()
+            },
+            {
+                "stage": "rejected",
+                "value": applications.filter(status="rejected").count()
+            },
+        ]
+
+        # JOB-WISE ANALYTICS
+        by_job = []
+
+        for job in jobs:
+
+            job_apps = AppliedJobs.objects.filter(job=job)
+
+            by_job.append({
+                "id": job.id,
+                "title": job.title,
+                "type": job.job_type,
+                "location": job.location,
+
+                "total": job_apps.count(),
+
+                "shortlisted": job_apps.filter(
+                    status="shortlisted"
+                ).count(),
+
+                "interviewed": job_apps.filter(
+                    status="interview"
+                ).count(),
+
+                "accepted": job_apps.filter(
+                    status="accepted"
+                ).count(),
+
+                "active": True,
+            })
+
+        # TREND DATA
+        trend = []
+
+        for i in range(1, 31):
+
+            trend.append({
+                "day": f"{i} May",
+                "applications": applications.count(),
+                "shortlisted": applications.filter(
+                    status="shortlisted"
+                ).count()
+            })
+
+        return Response({
+            "totalJobs": total_jobs,
+            "activeJobs": active_jobs,
+            "avgDaysToHire": 18,
+
+            "pipeline": pipeline,
+            "trend": trend,
+            "byJob": by_job,
+        })

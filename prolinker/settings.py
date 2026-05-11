@@ -13,6 +13,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +51,7 @@ INSTALLED_APPS = [
     'Administrator',
     'Company',
     'Student',
+    'Payment',
     'users',
 ]
 
@@ -159,7 +167,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ashishkshaji412002@gmail.com'
-EMAIL_HOST_PASSWORD = 'lbnu bvzw mhxu pvvx'
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
 
 
 # Static files (CSS, JavaScript, Images)

@@ -105,6 +105,7 @@ class LoginView(APIView):
             response_data = {
                 "access": str(refresh.access_token),
                 "refresh": str(refresh),
+                "is_admin": user.is_superuser,
                 "role": user.role,
                 "user_id": user.id,
                 "username": user.username

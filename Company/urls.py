@@ -11,4 +11,5 @@ urlpatterns = [
     path('dashboard/', CompanyDashboardView.as_view(), name='dashboard'),
     path("send-assessment/",SendAssessmentView.as_view(),name="send-assessment"),
     path("schedule-interview/",ScheduleInterviewView.as_view(),name="schedule-interview"),
+    path("analytics/", CompanyAnalyticsView.as_view(),name="company-analytics"),
 ]
